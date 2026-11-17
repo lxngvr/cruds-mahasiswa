@@ -21,12 +21,14 @@ class MahasiswaSeeder extends Seeder
 
         for ($i = 0; $i < 50; $i++) {
             Mahasiswa::create([
-                // NIM 15 digit angka yang dijamin unik dalam satu proses seeding.
-                'nim' => $faker->unique()->numerify(str_repeat('#', 15)),
+                // NIM tepat 10 digit angka yang dijamin unik dalam satu proses seeding.
+                'nim' => $faker->unique()->numerify(str_repeat('#', 10)),
                 'nama_lengkap' => $faker->name(),
                 'program_studi' => $faker->randomElement(Mahasiswa::PROGRAM_STUDI),
-                'angkatan' => $faker->numberBetween(2019, (int) date('Y')),
+                // Angkatan mengikuti rentang keamanan 2018 sampai tahun berjalan.
+                'angkatan' => $faker->numberBetween(2018, (int) date('Y')),
                 'foto' => null, // Data seed tidak memakai foto.
+                'catatan' => null, // Catatan tambahan boleh kosong.
             ]);
         }
     }

@@ -1,39 +1,36 @@
 <!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'CRUD Mahasiswa')</title>
-    {{-- Tailwind CSS melalui CDN, sesuai modul praktikum --}}
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="min-h-screen bg-slate-100 text-slate-800">
-    {{-- Navigasi utama aplikasi --}}
-    <nav class="bg-indigo-700 text-white shadow">
-        <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-            <a href="{{ route('mahasiswa.index') }}" class="text-lg font-bold tracking-tight">
-                CRUD Mahasiswa
-            </a>
-            <a href="{{ route('mahasiswa.create') }}"
-               class="rounded-lg bg-white px-4 py-2 text-sm font-semibold text-indigo-700 transition hover:bg-indigo-50">
-                + Tambah Mahasiswa
-            </a>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+
+        <title>{{ config('app.name', 'Laravel') }}</title>
+
+        <!-- Fonts -->
+        <link rel="preconnect" href="https://fonts.bunny.net">
+        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+
+        <!-- Scripts -->
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
+    </head>
+    <body class="font-sans antialiased">
+        <div class="min-h-screen bg-gray-100">
+            @include('layouts.navigation')
+
+            <!-- Page Heading -->
+            @isset($header)
+                <header class="bg-white shadow">
+                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                        {{ $header }}
+                    </div>
+                </header>
+            @endisset
+
+            <!-- Page Content -->
+            <main>
+                {{ $slot }}
+            </main>
         </div>
-    </nav>
-
-    <main class="mx-auto max-w-6xl px-4 py-8">
-        {{-- Notifikasi sukses setelah create/update/delete --}}
-        @if (session('success'))
-            <div class="mb-5 rounded-lg border border-green-300 bg-green-100 px-4 py-3 text-sm text-green-800">
-                {{ session('success') }}
-            </div>
-        @endif
-
-        @yield('content')
-    </main>
-
-    <footer class="border-t border-slate-200 bg-white py-4 text-center text-xs text-slate-500">
-        Praktikum Pemrograman Web &middot; CRUD Data Mahasiswa
-    </footer>
-</body>
+    </body>
 </html>

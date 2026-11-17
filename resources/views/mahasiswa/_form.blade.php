@@ -17,9 +17,9 @@
     </label>
     <input type="text" name="nim" id="nim"
            value="{{ old('nim', $mahasiswa?->nim) }}"
-           maxlength="15" inputmode="numeric" placeholder="Contoh: 202311000100001"
+           maxlength="10" inputmode="numeric" placeholder="Contoh: 2023110001"
            class="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-200 @error('nim') border-red-500 @else border-slate-300 @enderror">
-    <p class="mt-1 text-xs text-slate-500">15 digit angka dan belum terdaftar.</p>
+    <p class="mt-1 text-xs text-slate-500">Tepat 10 digit angka dan belum terdaftar.</p>
     @error('nim')
         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
     @enderror
@@ -34,6 +34,7 @@
            value="{{ old('nama_lengkap', $mahasiswa?->nama_lengkap) }}"
            maxlength="100" placeholder="Nama lengkap mahasiswa"
            class="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-200 @error('nama_lengkap') border-red-500 @else border-slate-300 @enderror">
+    <p class="mt-1 text-xs text-slate-500">Hanya huruf, spasi, titik, dan apostrof.</p>
     @error('nama_lengkap')
         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
     @enderror
@@ -68,8 +69,9 @@
         </label>
         <input type="number" name="angkatan" id="angkatan"
                value="{{ old('angkatan', $mahasiswa?->angkatan) }}"
-               min="1900" max="{{ date('Y') + 1 }}" placeholder="Contoh: 2024"
+               min="2018" max="{{ date('Y') }}" placeholder="Contoh: 2024"
                class="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-200 @error('angkatan') border-red-500 @else border-slate-300 @enderror">
+        <p class="mt-1 text-xs text-slate-500">Antara tahun 2018 sampai {{ date('Y') }}.</p>
         @error('angkatan')
             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
         @enderror
@@ -94,8 +96,21 @@
 
     <input type="file" name="foto" id="foto" accept=".jpg,.jpeg,.png,image/jpeg,image/png"
            class="block w-full cursor-pointer rounded-lg border px-3 py-2 text-sm text-slate-600 file:mr-4 file:rounded-md file:border-0 file:bg-indigo-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-indigo-700 hover:file:bg-indigo-100 @error('foto') border-red-500 @else border-slate-300 @enderror">
-    <p class="mt-1 text-xs text-slate-500">Format JPG, JPEG, atau PNG. Ukuran maksimal 2 MB.</p>
+    <p class="mt-1 text-xs text-slate-500">JPG, JPEG, atau PNG. Maksimal 2 MB dan minimal 100x100 piksel.</p>
     @error('foto')
+        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+    @enderror
+</div>
+
+{{-- Input catatan tambahan (teks bebas, maksimal 500 karakter) --}}
+<div>
+    <label for="catatan" class="mb-1 block text-sm font-medium text-slate-700">
+        Catatan <span class="text-xs font-normal text-slate-400">(opsional, maksimal 500 karakter)</span>
+    </label>
+    <textarea name="catatan" id="catatan" rows="4" maxlength="500"
+              placeholder="Catatan tambahan tentang mahasiswa..."
+              class="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-200 @error('catatan') border-red-500 @else border-slate-300 @enderror">{{ old('catatan', $mahasiswa?->catatan) }}</textarea>
+    @error('catatan')
         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
     @enderror
 </div>

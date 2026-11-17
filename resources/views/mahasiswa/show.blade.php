@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.mahasiswa')
 
 @section('title', 'Detail Mahasiswa')
 
@@ -50,6 +50,11 @@
                     <div>
                         <dt class="text-xs font-semibold uppercase tracking-wide text-slate-400">Angkatan</dt>
                         <dd class="mt-1 font-medium text-slate-800">{{ $mahasiswa->angkatan }}</dd>
+                    </div>
+                    {{-- Catatan dirender dengan {{ }} agar aman dari XSS --}}
+                    <div class="sm:col-span-2">
+                        <dt class="text-xs font-semibold uppercase tracking-wide text-slate-400">Catatan</dt>
+                        <dd class="mt-1 whitespace-pre-line text-slate-700">{{ $mahasiswa->catatan ?: '-' }}</dd>
                     </div>
                     <div>
                         <dt class="text-xs font-semibold uppercase tracking-wide text-slate-400">Dibuat</dt>

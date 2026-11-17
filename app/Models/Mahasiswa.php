@@ -25,6 +25,7 @@ class Mahasiswa extends Model
         'program_studi',
         'angkatan',
         'foto',
+        'catatan',
     ];
 
     /**

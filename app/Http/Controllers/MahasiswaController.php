@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreMahasiswaSecureRequest;
+use App\Http\Requests\UpdateMahasiswaSecureRequest;
 use App\Models\Mahasiswa;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class MahasiswaController extends Controller
@@ -50,13 +51,10 @@ class MahasiswaController extends Controller
     /**
      * Menyimpan data mahasiswa baru, termasuk upload foto jika ada.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(StoreMahasiswaSecureRequest $request): RedirectResponse
     {
-        // Validasi seluruh input terlebih dahulu.
-        $validated = $request->validate(
-            $this->validationRules(),
-            $this->validationMessages()
-        );
+        // Validasi dilakukan oleh Form Request khusus keamanan.
+        $validated = $request->validated();
 
         // Jika foto diunggah, simpan ke disk public pada folder mahasiswa.
         if ($request->hasFile('foto')) {
@@ -92,13 +90,10 @@ class MahasiswaController extends Controller
     /**
      * Memperbarui data mahasiswa. Foto lama hanya dihapus jika foto diganti.
      */
-    public function update(Request $request, Mahasiswa $mahasiswa): RedirectResponse
+    public function update(UpdateMahasiswaSecureRequest $request, Mahasiswa $mahasiswa): RedirectResponse
     {
-        // Validasi dengan mengabaikan NIM milik mahasiswa yang sedang diedit.
-        $validated = $request->validate(
-            $this->validationRules($mahasiswa),
-            $this->validationMessages()
-        );
+        // Form Request update sudah mengabaikan NIM milik data yang sedang diedit.
+        $validated = $request->validated();
 
         // Foto baru hanya diproses jika pengguna mengunggah file baru.
         if ($request->hasFile('foto')) {
@@ -133,46 +128,5 @@ class MahasiswaController extends Controller
         return redirect()
             ->route('mahasiswa.index')
             ->with('success', 'Data mahasiswa berhasil dihapus.');
-    }
-
-    /**
-     * Aturan validasi. Saat update, NIM milik data sendiri dikecualikan.
-     */
-    private function validationRules(?Mahasiswa $mahasiswa = null): array
-    {
-        return [
-            'nim' => [
-                'required',
-                'digits:15',
-                Rule::unique('mahasiswas', 'nim')->ignore($mahasiswa?->id),
-            ],
-            'nama_lengkap' => ['required', 'string', 'max:100'],
-            'program_studi' => ['required', Rule::in(Mahasiswa::PROGRAM_STUDI)],
-            'angkatan' => ['required', 'integer', 'min:1900', 'max:'.(date('Y') + 1)],
-            'foto' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'], // Maksimal 2 MB.
-        ];
-    }
-
-    /**
-     * Pesan validasi dalam bahasa Indonesia agar mudah dipahami pengguna.
-     */
-    private function validationMessages(): array
-    {
-        return [
-            'nim.required' => 'NIM wajib diisi.',
-            'nim.digits' => 'NIM harus terdiri dari 15 digit angka.',
-            'nim.unique' => 'NIM sudah terdaftar, gunakan NIM lain.',
-            'nama_lengkap.required' => 'Nama lengkap wajib diisi.',
-            'nama_lengkap.max' => 'Nama lengkap maksimal 100 karakter.',
-            'program_studi.required' => 'Program studi wajib dipilih.',
-            'program_studi.in' => 'Program studi yang dipilih tidak valid.',
-            'angkatan.required' => 'Angkatan wajib diisi.',
-            'angkatan.integer' => 'Angkatan harus berupa angka tahun.',
-            'angkatan.min' => 'Angkatan tidak boleh sebelum tahun 1900.',
-            'angkatan.max' => 'Angkatan tidak boleh melebihi tahun depan.',
-            'foto.image' => 'Berkas foto harus berupa gambar.',
-            'foto.mimes' => 'Format foto harus JPG, JPEG, atau PNG.',
-            'foto.max' => 'Ukuran foto maksimal 2 MB.',
-        ];
     }
 }
